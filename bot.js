@@ -48,7 +48,7 @@ async function addTrackToPlaylist(trackId) {
   }
 }
 
-discord.on('ready', () => {
+discord.on('clientReady', () => {
   console.log(`Logged in as ${discord.user.tag}`);
   refreshSpotifyToken();
   // Refresh token every 50 minutes
