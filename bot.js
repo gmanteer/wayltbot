@@ -61,10 +61,7 @@ discord.on('messageCreate', async (message) => {
 
   // Respond to Miku mentions
   if (message.content.toLowerCase().includes('miku')) {
-    const mikuEmojis = ['miku', 'mikudart', 'mikuyay', 'mikucheers'];
-    const randomEmoji = mikuEmojis[Math.floor(Math.random() * mikuEmojis.length)];
-    const emoji = message.guild.emojis.cache.find(e => e.name === randomEmoji);
-    if (emoji) message.reply(emoji.toString());
+    message.reply('miku!');
   }
 
   // Check for Spotify links
