@@ -1,6 +1,7 @@
-require('dotenv').config();
-const { Client, GatewayIntentBits } = require('discord.js');
-const SpotifyWebApi = require('spotify-web-api-node');
+require("dotenv").config();
+const { Client, GatewayIntentBits } = require("discord.js");
+const SpotifyWebApi = require("spotify-web-api-node");
+const https = require("https");
 
 // Initialize Discord client
 const discord = new Client({
@@ -23,9 +24,9 @@ async function refreshSpotifyToken() {
   try {
     const data = await spotifyApi.refreshAccessToken();
     spotifyApi.setAccessToken(data.body.access_token);
-    console.log('Spotify token refreshed');
+    console.log("Spotify token refreshed");
   } catch (error) {
-    console.error('Error refreshing token:', error);
+    console.error("Error refreshing token:", error);
   }
 }
 
@@ -43,28 +44,35 @@ async function addTrackToPlaylist(trackId) {
     ]);
     return true;
   } catch (error) {
-    console.error('Error adding track:', error);
+    console.error("Error adding track:", error);
     return false;
   }
 }
 
-discord.on('clientReady', () => {
+discord.on("clientReady", () => {
   console.log(`Logged in as ${discord.user.tag}`);
   refreshSpotifyToken();
   // Refresh token every 50 minutes
   setInterval(refreshSpotifyToken, 50 * 60 * 1000);
+  // Uptime Kuma heartbeat
+  setInterval(() => {
+    http.get(
+      "http://192.168.7.202:3001/api/push/bCegsTYZdx?status=up&msg=OK&ping=",
+    );
+  }, 60 * 1000);
 });
 
-discord.on('messageCreate', async (message) => {
+discord.on("messageCreate", async (message) => {
   // Ignore bot messages
   if (message.author.bot) return;
 
   // Respond to Miku mentions
-  if (message.content.toLowerCase().includes('miku')) {
-    const mikuEmojis = ['miku', 'mikudart', 'mikuyay', 'mikucheers'];
-    const randomName = mikuEmojis[Math.floor(Math.random() * mikuEmojis.length)];
+  if (message.content.toLowerCase().includes("miku")) {
+    const mikuEmojis = ["miku", "mikudart", "mikuyay", "mikucheers"];
+    const randomName =
+      mikuEmojis[Math.floor(Math.random() * mikuEmojis.length)];
     await message.guild.emojis.fetch();
-    const emoji = message.guild.emojis.cache.find(e => e.name === randomName);
+    const emoji = message.guild.emojis.cache.find((e) => e.name === randomName);
     if (emoji) message.reply(emoji.toString());
   }
 
@@ -78,25 +86,25 @@ discord.on('messageCreate', async (message) => {
       if (trackId) {
         const success = await addTrackToPlaylist(trackId);
         if (success) {
-          message.react('✅');
+          message.react("✅");
         } else {
-          message.react('❌');
+          message.react("❌");
         }
       }
     }
   }
 });
 
-discord.on('disconnect', () => {
-  console.log('Disconnected from Discord, attempting to reconnect...');
+discord.on("disconnect", () => {
+  console.log("Disconnected from Discord, attempting to reconnect...");
 });
 
-discord.on('error', (error) => {
-  console.error('Discord error:', error);
+discord.on("error", (error) => {
+  console.error("Discord error:", error);
 });
 
-process.on('SIGTERM', () => {
-  console.log('Received SIGTERM, ignoring...');
+process.on("SIGTERM", () => {
+  console.log("Received SIGTERM, ignoring...");
 });
 
 discord.login(process.env.DISCORD_BOT_TOKEN);
