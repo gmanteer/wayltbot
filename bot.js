@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
 const SpotifyWebApi = require("spotify-web-api-node");
-const https = require("https");
+const https = require("http");
 
 // Initialize Discord client
 const discord = new Client({
