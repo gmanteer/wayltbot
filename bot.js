@@ -78,4 +78,16 @@ discord.on('messageCreate', async (message) => {
   }
 });
 
+discord.on('disconnect', () => {
+  console.log('Disconnected from Discord, attempting to reconnect...');
+});
+
+discord.on('error', (error) => {
+  console.error('Discord error:', error);
+});
+
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM, ignoring...');
+});
+
 discord.login(process.env.DISCORD_BOT_TOKEN);
