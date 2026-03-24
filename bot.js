@@ -59,6 +59,14 @@ discord.on('messageCreate', async (message) => {
   // Ignore bot messages
   if (message.author.bot) return;
 
+  // Respond to Miku mentions
+  if (message.content.toLowerCase().includes('miku')) {
+    const mikuEmojis = ['miku', 'mikudart', 'mikuyay', 'mikucheers'];
+    const randomEmoji = mikuEmojis[Math.floor(Math.random() * mikuEmojis.length)];
+    const emoji = message.guild.emojis.cache.find(e => e.name === randomEmoji);
+    if (emoji) message.reply(emoji.toString());
+  }
+
   // Check for Spotify links
   const spotifyUrlRegex = /https?:\/\/open\.spotify\.com\/track\/[a-zA-Z0-9]+/g;
   const matches = message.content.match(spotifyUrlRegex);
